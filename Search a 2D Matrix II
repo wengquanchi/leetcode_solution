@@ -1,0 +1,54 @@
+
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+
+Integers in each row are sorted in ascending from left to right.
+Integers in each column are sorted in ascending from top to bottom.
+
+Example:
+
+Consider the following matrix:
+
+[
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+]
+Given target = 5, return true.
+
+Given target = 20, return false.
+
+----------------------------------------------------------------------------------
+def SearchRec(matrix, top, bottom, left, right, target):
+    if left > right or top > bottom:
+        return False
+
+    mid_row, mid_col = (top+bottom)//2, (left+right)//2
+
+    if matrix[mid_row][mid_col] == target:
+        return True
+    if matrix[mid_row][mid_col] < target:
+        bottom = SearchRec(matrix, mid_row+1, bottom, left, right, target)
+        top_right = SearchRec(matrix, top, mid_row, mid_col+1, right, target)
+        return bottom or top_right
+
+    if matrix[mid_row][mid_col] > target:
+        top = SearchRec(matrix, top, mid_row-1, left, right, target)
+        bottom_left = SearchRec(matrix, mid_row, bottom, left, mid_col-1, target)
+        return top or bottom_left
+      
+class Solution:
+    def searchMatrix(self, matrix, target):
+        """
+        :type matrix: List[List[int]]
+        :type target: int
+        :rtype: bool
+        """
+        r = len(matrix)
+        if r == 0: return False
+        c = len(matrix[0])
+        if c == 0: return False
+            
+        return SearchRec(matrix, 0, r-1, 0, c-1, target)
+    
